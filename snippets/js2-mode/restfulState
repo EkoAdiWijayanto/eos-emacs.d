@@ -1,0 +1,36 @@
+# -*- mode: snippet -*-
+# name: restfulState
+# key: restfulState
+# --
+'use strict';
+
+angular
+    .module('app')
+    .config(function($stateProvider) {
+        $stateProvider
+            .state('$1.$2', {
+                url: '/$2',
+                abstract: true,
+                views: {
+                    menu: {
+                        templateUrl: 'func/views/menu.html'
+                    },
+                    content: {
+                        templateUrl: 'func/views/$2.html'
+                    }
+                }
+            })
+            .state('$1.$2.list', {
+                url: '/list',
+                controller: '$3ListCtrl',
+                controllerAs: 'listVm',
+                templateUrl: 'func/views/$2_list.html'
+            })
+            .state('$1.$2.edit', {
+                url: '/edit/:id',
+                controller: '$3EditCtrl',
+                controllerAs: 'editVm',
+                templateUrl: 'func/views/$2_edit.html'
+            });
+
+    });

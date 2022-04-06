@@ -1,0 +1,49 @@
+# -*- mode: snippet -*-
+# name: tdocs
+# key: tdocs
+# --
+module.exports = {
+  description: '$1',
+  securities: ['find', 'create', 'remove', 'get', 'patch', 'update'],
+  find: {
+    responses: {
+      '200': {
+        description: 'Successful'
+      },
+      '401': {
+        description: 'Invalid login'
+      }
+    }
+  },
+  create: {
+    parameters: [{
+      description: 'Users object',
+      in: 'body',
+      required: true,
+      name: 'body',
+      schema: {
+        properties: {},
+        example: {
+          userId: 'your-userId',
+          password: 'your-password',
+          role: 'roleId',
+          profile: {
+            email: 'your-email'
+          }
+        },
+        type: 'object'
+      }
+    }],
+    responses: {
+      '201': {
+        description: 'Created'
+      },
+      '401': {
+        description: 'Invalid login'
+      },
+      '500': {
+        description: 'Internal server error'
+      }
+    }
+  }
+};

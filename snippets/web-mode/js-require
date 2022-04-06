@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: require
+# key: require
+# --
+const ${2:${1:$(eaw/lower-camel-case yas/text)}} = require('$1'); $0

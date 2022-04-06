@@ -1,0 +1,20 @@
+# -*- mode: snippet -*-
+# name: wallex-dep
+# key: wxDep
+# --
+
+import ${1:$(file-name-base yas/text)} from '$1';
+
+_${1:$(eaw/lower-camel-case yas/text)}: ${1:$(file-name-base yas/text)};
+
+${1:$(eaw/lower-camel-case yas/text)} = new ${1:$(file-name-base yas/text)}(),
+
+this.${1:$(eaw/lower-camel-case yas/text)} = ${1:$(eaw/lower-camel-case yas/text)};
+
+get ${1:$(eaw/lower-camel-case yas/text)}(): ${1:$(file-name-base yas/text)} {
+  return this._${1:$(eaw/lower-camel-case yas/text)};
+}     
+  
+set ${1:$(eaw/lower-camel-case yas/text)}(value: ${1:$(file-name-base yas/text)}) {
+  this._${1:$(eaw/lower-camel-case yas/text)} = value;
+}

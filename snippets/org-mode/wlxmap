@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: wlxmap
+# key: wlxmap
+# --
+
+select * from funding_automation_log where inward_params like '%%' order by created_at desc;
+
+select * from customer_bank_account a
+left join accounts b on a.account_id = b.id
+where a.bank_account_holder_name like '%%';
+
+select * from accounts where id_account = ;
+
+INSERT INTO customer_bank_account (id, created_at, bank_account_holder_name, account_id, valid)
+VALUES (uuid(), NOW(), "", "", 1);

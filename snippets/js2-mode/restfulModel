@@ -1,0 +1,20 @@
+# -*- mode: snippet -*-
+# name: restfulModel
+# key: restfulModel
+# --
+var restful = require('node-restful');
+var mongoose = require('mongoose');
+var config = require('config');
+
+var attributes = {
+    $1
+};
+
+var schema = mongoose.Schema(attributes);
+var model = restful.model('$2', schema, '$3')
+    .methods(['get', 'post', 'put', 'delete']);
+
+require('base-model')(model);
+require('./upload-model')(model, config.uploads.base, '$4');
+
+module.exports = model;

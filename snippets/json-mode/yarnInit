@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: yarnInit
+# key: yarnInit
+# --
+{
+  "name": "$1",
+  "version": "1.0.0",
+  "description": "$2",
+  "main": "$3",
+  "author": "Eko Adi Wijayanto",
+  "license": "MIT"
+}

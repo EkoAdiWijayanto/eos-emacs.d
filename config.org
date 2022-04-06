@@ -1,0 +1,1291 @@
+#+TITLE: EMACS CONFIGS
+#+AUTHOR: EKO ADI WIJAYANTO
+#+EMAIL: [[mailto:eko.adi.wijayanto@gmail.com][eko.adi.wijayanto@gmail.com]]
+
+
+* My Info
+#+BEGIN_SRC emacs-lisp
+  (setq user-full-name "Eko Adi Wijanyanto"
+        user-mail-address "eko.adi.wijayanto@gmail.com")
+#+END_SRC
+* Init
+
+Enable disable debug mode
+
+#+BEGIN_SRC emacs-lisp
+  (setq debug-on-error t)  
+#+END_SRC
+
+Setup encoding
+
+#+BEGIN_SRC emacs-lisp
+  (set-language-environment "UTF-8")
+  (set-default-coding-systems 'utf-8)  
+#+END_SRC
+
+Setup window behaviour 
+
+#+BEGIN_SRC emacs-lisp
+  (setq pop-up-windows nil)  
+#+END_SRC
+
+Setup emacs packages & repository
+
+#+BEGIN_SRC emacs-lisp
+    (require 'package)
+
+    (setq package-enable-at-startup nil)
+
+    (setq package-archives
+          '(("GNU ELPA"     . "http://elpa.gnu.org/packages/")
+            ("MELPA Stable" . "https://stable.melpa.org/packages/")
+            ("MELPA"        . "https://melpa.org/packages/"))
+          package-archive-priorities
+          '(("MELPA Stable" . 10)
+            ("GNU ELPA"     . 5)
+            ("MELPA"        . 0)))
+
+    (unless (package-installed-p 'use-package)
+      (package-refresh-contents)
+      (package-install 'use-package))
+
+    (setq use-package-verbose t)
+    (setq use-package-always-ensure t)
+
+    (use-package quelpa-use-package
+      :ensure t
+      :init
+      (setq quelpa-update-melpa-p nil))
+
+    (use-package auto-compile
+      :config
+      (auto-compile-on-load-mode))
+
+    (use-package try)
+
+  (setenv "PATH" (concat (getenv "PATH") ":" (expand-file-name "~/.nvm/versions/node/v12.18.0/bin")))
+  (setq exec-path (append exec-path (list (expand-file-name "~/.nvm/versions/node/v12.18.0/bin"))))
+
+#+END_SRC 
+
+#+BEGIN_SRC emacs-lisp
+
+  (setq-default bidi-paragraph-direction 'left-to-right)
+
+  (if (version<= "27.1" emacs-version)
+      (setq bidi-inhibit-bpa t))
+
+  (if (version<= "27.1" emacs-version)
+      (global-so-long-mode 1))
+
+  (add-to-list 'default-frame-alist '(font . "Source Code Pro Medium-14"))
+
+  (defalias 'yes-or-no-p 'y-or-n-p)
+
+  (setq frame-title-format
+      '(""
+        "%b"
+        (:eval
+         (let ((project-name (projectile-project-name)))
+           (unless (string= "-" project-name)
+             (format " in [%s]" project-name))))))
+
+  (add-hook 'dired-mode-hook
+            (lambda ()
+              (dired-hide-details-mode)))
+
+  (defalias 'list-buffers 'ibuffer)
+
+  (setq inhibit-startup-screen t)
+  (setq redisplay-dont-pause t)
+  (column-number-mode t)
+  (delete-selection-mode 1)
+  (global-hl-line-mode t)
+  (global-linum-mode t)
+
+  (setq initial-scratch-message "") ;; Uh, I know what Scratch is for
+  (setq visible-bell t)             ;; Get rid of the beeps
+
+  (menu-bar-mode 1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+
+  (blink-cursor-mode nil)
+  (setq cursor-type 'box)  
+
+  ;;(global-visual-line-mode 1)
+#+END_SRC
+
+Setup backup
+
+#+BEGIN_SRC emacs-lisp
+  (setq backup-directory-alist '(("." . "~/.emacs.d/backup")))
+  (setq delete-old-versions -1)
+  (setq version-control t)
+  (setq vc-make-backup-files t)
+  (setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
+#+END_SRC	
+
+Setup history
+
+#+BEGIN_SRC emacs-lisp
+  (setq savehist-file "~/.emacs.d/savehist")
+  (savehist-mode 1)
+  (setq history-length t)
+  (setq history-delete-duplicates t)
+  (setq savehist-save-minibuffer-history 1)
+  (setq savehist-additional-variables
+        '(kill-ring
+          search-ring
+          regexp-search-ring))
+#+END_SRC
+
+Setup indentation
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default indent-tabs-mode nil)
+  (setq indent-tabs-mode nil)
+  (setq tab-width 2)
+  (setq standard-indent 2)
+  (setq truncate-lines t)
+  (setq truncate-partial-width-windows nil)
+  (setq js-indent-level 2)
+  (winner-mode t)
+#+END_SRC
+
+Disable Recenter Scroll
+
+#+BEGIN_SRC emacs-lisp
+  (setq scroll-step 1)
+  ; (setq scroll-conservatively 10000)
+  (setq auto-window-vscroll nil)
+  (setq
+   scroll-conservatively 1000                     ;; only 'jump' when moving this far
+   scroll-margin 4                                ;; scroll N lines to screen edge
+   scroll-step 1                                  ;; keyboard scroll one line at a time
+   mouse-wheel-scroll-amount '(6 ((shift) . 1))   ;; mouse scroll N lines
+   mouse-wheel-progressive-speed nil              ;; don't accelerate scrolling
+
+   redisplay-dont-pause t                         ;; don't pause display on input
+
+   ;; Always redraw immediately when scrolling,
+   ;; more responsive and doesn't hang!
+   fast-but-imprecise-scrolling nil
+   jit-lock-defer-time 0
+   )
+#+END_SRC
+
+Disable open new frame
+#+BEGIN_SRC emacs-lisp
+  ;; (define-advice make-frame (:around (fn &rest args) suppress)
+  ;;   "Suppress making new frame; return existing frame."
+  ;;   (message "make-frame suppressed; proceed at your own peril.")
+  ;;   (selected-frame))
+#+END_SRC
+* Packages
+** Indent Guide
+#+BEGIN_SRC emacs-lisp
+  (use-package indent-guide
+    :config
+    (indent-guide-global-mode)
+    )
+#+END_SRC
+
+** Paradox
+#+BEGIN_SRC emacs-lisp
+  (use-package paradox
+    :defer nil
+    :custom
+    (paradox-github-token t)
+    :config
+    (paradox-enable))
+#+END_SRC
+** Save Place
+#+BEGIN_SRC emacs-lisp
+  (use-package saveplace
+    :defer nil
+    :config
+    (save-place-mode))
+
+#+END_SRC
+** Smooth Scroll
+#+BEGIN_SRC emacs-lisp
+  ;(use-package smooth-scrolling
+  ;  :config
+  ;  (smooth-scrolling-mode 1))
+#+END_SRC
+
+** Projectile
+#+BEGIN_SRC emacs-lisp
+  ;; projectile
+  (use-package projectile
+    :config
+    (projectile-global-mode)
+    (setq projectile-completion-system 'ivy)
+    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+    (add-to-list 'projectile-globally-ignored-directories "lib"))
+
+
+  (use-package counsel-projectile
+    :config
+    (counsel-projectile-mode)
+    (defun my/counsel-projectile-switch-project-action-dired (project)
+      "Open ‘dired’ at the root of the project."
+      (let ((projectile-switch-project-action
+             (lambda ()
+               (projectile-dired))))
+        (counsel-projectile-switch-project-by-name project)))
+
+    (counsel-projectile-modify-action
+     'counsel-projectile-switch-project-action
+     '((add ("." my/counsel-projectile-switch-project-action-dired
+             "open ‘dired’ at the root of the project")
+            1))))
+#+END_SRC
+** Beacon 
+#+BEGIN_SRC emacs-lisp
+  (use-package beacon
+    :config
+    (beacon-mode)
+    :init
+    (setq beacon-push-mark 35)
+    (setq beacon-color "#ff0000"))
+
+#+END_SRC
+** All the Icons
+#+BEGIN_SRC emacs-lisp
+  (use-package all-the-icons :ensure t)
+  (use-package all-the-icons-dired :ensure t)
+  (use-package all-the-icons-ivy :ensure t)
+#+END_SRC
+
+** Restart Emacs
+#+BEGIN_SRC emacs-lisp
+(use-package restart-emacs)
+#+END_SRC
+** Open With External Apps
+#+BEGIN_SRC emacs-lisp
+  ;  (setcdr (assq 'system org-file-apps-defaults-gnu ) "xdg-open %s")
+  (use-package openwith
+    :config
+    (progn
+      (openwith-mode t)
+      (setq openwith-associations
+            (list
+             (list (openwith-make-extension-regexp
+                    '("mm"))
+                   "freemind"
+                   '(file))
+             (list (openwith-make-extension-regexp
+                    '("mpg" "mpeg" "mp3" "mp4"
+                      "avi" "wmv" "wav" "mov" "flv"
+                      "ogm" "ogg" "mkv"))
+                   "vlc"
+                   '(file))
+             (list (openwith-make-extension-regexp
+                    '("docx" "doc" "xls" "ppt" "odt" "ods" "odg" "odp"))
+                   "libreoffice"
+                   '(file))
+             '("\\.lyx" "lyx" (file))
+             '("\\.chm" "kchmviewer" (file))
+             (list (openwith-make-extension-regexp
+                    '("pdf" "ps" "ps.gz" "dvi"))
+                   "evince"
+                   '(file))
+             (list (openwith-make-extension-regexp
+                    '("png" "jpg" "jpeg"))
+                   "eog"
+                   '(file))
+             ))))
+#+END_SRC
+** Set Theme
+#+BEGIN_SRC emacs-lisp
+  (use-package cyberpunk-theme
+    :config
+    (load-theme #'cyberpunk t)
+    (set-background-color "#151A28")
+    (set-face-background 'hl-line "#555555")
+    (set-face-foreground 'hl-line "#ffffff")
+    )
+#+END_SRC
+** Which Key
+   Menampilkan informasi shortcut keyboard.
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :defer 10
+    :diminish which-key-mode 
+    :init
+    (progn
+      (setq which-key-popup-type 'side-window)
+      (setq which-key-side-window-location 'right)
+      (setq which-key-side-window-max-height 0.66)
+      )
+    :config (which-key-mode 1))
+#+END_SRC
+** Swiper 
+#+BEGIN_SRC emacs-lisp
+  (use-package ivy
+    :ensure t
+    :config
+    (ivy-mode)
+    (setq ivy-display-style 'fancy
+          ivy-use-virtual-buffers t
+          enable-recursive-minibuffers t
+          ivy-use-selectable-prompt t)
+    )
+  (use-package ivy-yasnippet)
+  (use-package counsel)
+  (use-package smex) ; used by counsel sort recent
+  (use-package swiper
+    :diminish ivy-mode
+    :config
+    (ivy-mode 1)
+    :init
+    (setq ivy-initial-inputs-alist nil)
+    (setq ivy-use-virtual-buffers t)
+    (setq enable-recursive-minibuffers t)
+    (global-set-key (kbd "C-s") 'swiper)
+    (global-set-key (kbd "C-c C-r") 'ivy-resume)
+    (global-set-key (kbd "<f6>") 'ivy-resume)
+    (global-set-key (kbd "M-x") 'counsel-M-x)
+    (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+    (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+    (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+    (global-set-key (kbd "<f1> l") 'counsel-find-library)
+    (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+    (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+    (global-set-key (kbd "C-c g") 'counsel-git)
+    (global-set-key (kbd "C-c j") 'counsel-git-grep)
+    (global-set-key (kbd "C-c k") 'counsel-ag)
+    (global-set-key (kbd "C-x l") 'counsel-locate)
+    (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+    (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+    (global-set-key (kbd "M-n") 'counsel-ag-thing-at-point)
+    )
+
+#+END_SRC
+
+** Spaceline
+#+BEGIN_SRC emacs-lisp
+
+  (use-package spaceline-all-the-icons
+    :ensure t)
+
+  (use-package spaceline
+    :ensure t
+    :config (progn
+              (require 'spaceline-config)
+              (spaceline-all-the-icons-theme)
+              ;; Toggles
+              (spaceline-toggle-all-the-icons-buffer-size-off)
+              (spaceline-toggle-all-the-icons-vc-icon-on)
+              (spaceline-toggle-all-the-icons-vc-status-on)
+              (spaceline-toggle-all-the-icons-git-status-on)
+              (spaceline-toggle-all-the-icons-flycheck-status-on)
+              (spaceline-toggle-all-the-icons-time-off)
+              )
+             )
+#+END_SRC
+** Ace Window
+#+BEGIN_SRC emacs-lisp
+  (use-package ace-window
+    :config
+    (global-set-key (kbd "C-x o") 'ace-window))
+#+END_SRC
+** String Inflection
+#+BEGIN_SRC emacs-lisp
+  (use-package string-inflection)
+#+END_SRC
+
+** AG
+#+BEGIN_SRC emacs-lisp
+  (use-package ag)
+#+END_SRC
+
+** Editor Config
+#+BEGIN_SRC emacs-lisp
+  (use-package editorconfig
+    :diminish editorconfig-mode
+    :config
+    (editorconfig-mode 1))
+#+END_SRC
+** Expand Region
+#+BEGIN_SRC emacs-lisp
+  (use-package expand-region
+    :init
+    (global-set-key (kbd "C-^") 'er/expand-region))
+
+#+END_SRC
+
+** Smartparens
+   Commands:
+   - sp-splice-sexp to remove pair
+   - sp-rewrap-sexp to change pair
+   - sp-forward-barf-sexp
+   - sp-forward-slurp-sexp
+   - sp-forward-slurp-hybrid-sexp
+   - sp-forward-sexp
+   - sp-backward-sexp
+   - sp-down-sexp
+   - sp-backward-up-sexp
+#+BEGIN_SRC emacs-lisp
+  (use-package smartparens
+    :config
+    (progn
+      (show-smartparens-global-mode t)
+      (smartparens-global-mode t))
+    :init
+    (define-key smartparens-mode-map (kbd "C-M-f") 'sp-forward-sexp)
+    (define-key smartparens-mode-map (kbd "C-M-b") 'sp-backward-sexp)
+
+    (define-key smartparens-mode-map (kbd "C-M-a") 'sp-beginning-of-sexp)
+    (define-key smartparens-mode-map (kbd "C-M-e") 'sp-end-of-sexp)
+
+    (define-key smartparens-mode-map (kbd "C-M-k") 'sp-kill-sexp)
+    (define-key smartparens-mode-map (kbd "C-M-w") 'sp-copy-sexp)
+
+    (define-key smartparens-mode-map (kbd "M-<delete>") 'sp-unwrap-sexp)
+    (define-key smartparens-mode-map (kbd "M-<backspace>") 'sp-rewrap-sexp)
+
+    ;; (define-key smartparens-mode-map (kbd "C-M-d") 'sp-down-sexp)
+    ;; (define-key smartparens-mode-map (kbd "C-M-a") 'sp-backward-down-sexp)
+
+    ;; (define-key smartparens-mode-map (kbd "C-M-e") 'sp-up-sexp)
+    ;; (define-key smartparens-mode-map (kbd "C-M-u") 'sp-backward-up-sexp)
+    ;; (define-key smartparens-mode-map (kbd "C-M-t") 'sp-transpose-sexp)
+
+    ;; (define-key smartparens-mode-map (kbd "C-M-n") 'sp-forward-hybrid-sexp)
+    ;; (define-key smartparens-mode-map (kbd "C-M-p") 'sp-backward-hybrid-sexp)
+
+    ;; (define-key smartparens-mode-map (kbd "C-M-k") 'sp-kill-sexp)
+    ;; (define-key smartparens-mode-map (kbd "C-M-w") 'sp-copy-sexp)
+
+    ;; (define-key smartparens-mode-map (kbd "M-<delete>") 'sp-unwrap-sexp)
+    ;; (define-key smartparens-mode-map (kbd "M-<backspace>") 'sp-backward-unwrap-sexp)
+
+    ;; (define-key smartparens-mode-map (kbd "C-<right>") 'sp-forward-slurp-sexp)
+    ;; (define-key smartparens-mode-map (kbd "C-<left>") 'sp-forward-barf-sexp)
+    ;; (define-key smartparens-mode-map (kbd "C-M-<left>") 'sp-backward-slurp-sexp)
+    ;; (define-key smartparens-mode-map (kbd "C-M-<right>") 'sp-backward-barf-sexp)
+    )
+
+     ;; ("C-<right>" . sp-forward-slurp-sexp)
+     ;; ("M-<right>" . sp-forward-barf-sexp)
+     ;; ("C-<left>"  . sp-backward-slurp-sexp)
+     ;; ("M-<left>"  . sp-backward-barf-sexp)
+
+     ;; ("C-M-t" . sp-transpose-sexp)
+     ;; ("C-M-k" . sp-kill-sexp)
+     ;; ("C-k"   . sp-kill-hybrid-sexp)
+     ;; ("M-k"   . sp-backward-kill-sexp)
+     ;; ("C-M-w" . sp-copy-sexp)
+     ;; ("C-M-d" . delete-sexp)
+
+     ;; ("M-<backspace>" . backward-kill-word)
+     ;; ("C-<backspace>" . sp-backward-kill-word)
+     ;; ([remap sp-backward-kill-word] . backward-kill-word)
+
+     ;; ("M-[" . sp-backward-unwrap-sexp)
+     ;; ("M-]" . sp-unwrap-sexp)
+
+     ;; ("C-x C-t" . sp-transpose-hybrid-sexp)
+
+     ;; ("C-c ("  . wrap-with-parens)
+     ;; ("C-c ["  . wrap-with-brackets)
+     ;; ("C-c {"  . wrap-with-braces)
+     ;; ("C-c '"  . wrap-with-single-quotes)
+     ;; ("C-c \"" . wrap-with-double-quotes)
+     ;; ("C-c _"  . wrap-with-underscores)
+     ;; ("C-c `"  . wrap-with-back-quotes)))
+#+END_SRC
+** Yasnippet
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :diminish yas-minor-mode
+    :init
+    (progn
+      (add-hook 'yas-minor-mode-hook
+                (lambda ()
+                  (yas-activate-extra-mode 'fundamental-mode)))))
+
+  (yas-global-mode)
+
+#+END_SRC
+** Visual Regexp
+#+BEGIN_SRC emacs-lisp
+  (use-package visual-regexp
+    :init
+    ;;visual regexp search replace
+    (define-key global-map (kbd "C-c r") 'vr/replace)
+    (define-key global-map (kbd "C-c q") 'vr/query-replace)
+    ;; if you use multiple-cursors, this is for you:
+    (define-key global-map (kbd "C-c m") 'vr/mc-mark))
+
+#+END_SRC
+
+** Rainbow Delimiters
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-delimiters 
+    :init
+    (custom-set-faces
+     '(rainbow-delimiters-depth-1-face ((t (:foreground "dark orange"))))
+     '(rainbow-delimiters-depth-2-face ((t (:foreground "deep pink"))))
+     '(rainbow-delimiters-depth-3-face ((t (:foreground "chartreuse"))))
+     '(rainbow-delimiters-depth-4-face ((t (:foreground "deep sky blue"))))
+     '(rainbow-delimiters-depth-5-face ((t (:foreground "yellow"))))
+     '(rainbow-delimiters-depth-6-face ((t (:foreground "orchid"))))
+     '(rainbow-delimiters-depth-7-face ((t (:foreground "spring green"))))
+     '(rainbow-delimiters-depth-8-face ((t (:foreground "sienna1"))))))
+#+END_SRC
+
+** Multiple Cursors
+#+BEGIN_SRC emacs-lisp
+  (use-package multiple-cursors
+    :bind (("C-]" . mc/mark-next-like-this)
+           ("C-}" . mc/mark-all-like-this)
+           ))
+#+END_SRC
+
+** Hungry Delete
+#+BEGIN_SRC emacs-lisp
+
+  (use-package hungry-delete
+    :config
+    (global-hungry-delete-mode))
+
+#+END_SRC
+
+** Company
+#+BEGIN_SRC emacs-lisp
+
+  (use-package company
+    :ensure t
+    :init
+    (global-company-mode)
+    :config
+    (setq company-idle-delay 1
+          company-minimum-prefix-length 1
+          company-show-numbers t
+          company-tooltip-limit 20
+          company-dabbrev-downcase nil)
+
+    :bind ("C-:" . company-complete)  ; In case I don't want to wait
+    :diminish company-mode)
+
+  (use-package company-web
+    :ensure t
+    :hook (web-mode . (lambda () (add-to-list (make-local-variable 'company-backends) '(company-web-html)))))
+
+  (use-package company-shell
+    :config
+    (add-to-list 'company-backends '(company-shell)))
+
+  (use-package company-flow
+    :ensure t
+    :config
+    (add-to-list 'company-backends '(company-flow)))
+
+  (setq company-backends '((
+                            company-files
+                            company-keywords
+                            company-capf
+                            company-yasnippet
+                            company-abbrev
+                            company-dabbrev
+                            )
+                           ))
+#+END_SRC
+
+** Move Text 
+#+BEGIN_SRC emacs-lisp
+  (use-package move-text
+    :config
+    (move-text-default-bindings))
+
+#+END_SRC
+** Rainbow Mode 
+#+BEGIN_SRC emacs-lisp
+(use-package rainbow-mode)
+
+#+END_SRC
+** Duplicate Current Line or Region
+#+BEGIN_SRC emacs-lisp
+  (use-package duplicate-thing
+    :init
+    (global-set-key (kbd "C-c d") 'duplicate-thing))
+
+#+END_SRC
+** Flycheck
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :ensure t
+    :config
+    (global-flycheck-mode)
+    (setq flycheck-check-syntax-automatically '(mode-enabled save))
+    (flycheck-add-mode 'javascript-eslint 'web-mode) ;(with-eval-after-load 'lsp-mode (require 'lsp-flycheck))
+    (setq-default flycheck-disabled-checkers
+      (append flycheck-disabled-checkers
+              '(javascript-jscs)
+              '(json-jsonlist)
+              ;'(javascript-flow)
+              '(json-jsonlist)
+              '(javascript-jshint)))
+    (flycheck-add-mode 'javascript-eslint 'web-mode)
+    )
+
+  ;; use local eslint from node_modules before global
+  ;; http://emacs.stackexchange.com/questions/21205/flycheck-with-file-relative-eslint-executable
+  ;; (defun my/use-eslint-from-node-modules ()
+  ;;   (let* ((root (locate-dominating-file
+  ;;                 (or (buffer-file-name) default-directory)
+  ;;                 "node_modules"))
+  ;;          (eslint (and root
+  ;;                       (expand-file-name "node_modules/eslint/bin/eslint.js"
+  ;;                                         root))))
+  ;;     (when (and eslint (file-executable-p eslint))
+  ;;       (setq-local flycheck-javascript-eslint-executable eslint))))
+  ;; (add-hook 'flycheck-mode-hook #'my/use-eslint-from-node-modules)
+
+#+END_SRC
+** GIT 
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :init
+    (global-set-key (kbd "C-c g") 'magit-status))
+
+  (use-package git-gutter-fringe)
+
+  (use-package git-timemachine)
+#+END_SRC
+** IMenu List
+#+BEGIN_SRC emacs-lisp
+  (use-package imenu-list
+    :ensure t
+    :config
+    (global-set-key (kbd "C-\"") #'imenu-list-smart-toggle))
+#+END_SRC
+* Org Mode
+** Init
+ #+BEGIN_SRC emacs-lisp
+   (use-package org-journal
+     :ensure t)
+
+   ;; This is the base folder where all your "books"
+   ;; will be stored.
+   (setq journal-base-dir "/home/work/ORG/")
+   (setq journal-name "journal.org")
+   (setq org-journal-dir (concat journal-base-dir "journal"))
+
+   (defun disable-fylcheck-in-org-src-block ()
+     (setq-local flycheck-disabled-checkers (append '(emacs-lisp emacs-lisp-checkdoc)))
+     )
+
+   (add-hook 'org-src-mode-hook 'disable-fylcheck-in-org-src-block)
+
+   (global-set-key (kbd "C-c l") 'org-store-link)
+   (global-set-key (kbd "C-c a") 'org-agenda)
+   ;; (global-set-key (kbd "C-c c") 'org-capture)
+
+   (setq org-tags-column 46)
+
+   ;;; The most basic logging is to keep track of when a certain TODO item was finished
+   (setq org-log-done 'time)
+
+   ;; Start the weekly agenda on Monday
+   (setq org-agenda-start-on-weekday 1)
+
+   (setq org-startup-indented t)
+
+   ;; Author name to be auto inserted in entries
+   (setq journal-author "Eko Adi Wijayanto")
+
+   (setq org-todo-keywords
+         '((sequence "TODO" "WIP" "BLOCKED" "|" "DELEGATED" "ABANDONED" "CANCELED" "DONE")))
+
+   ;; (setq org-todo-keyword-faces
+   ;;       '(("TODO" . org-warning)
+   ;;         ("WIP" . "yellow")
+   ;;         ("BLOCKED" . "red")
+   ;;         ("DONE" . "green")
+   ;;         ("DELEGATED" . "orange")
+   ;;         ("ABANDONED" . "magenta")
+   ;;         ("CANCELED" . "gray")))
+
+   ;; (setq document-types '(
+   ;;                        ("o" "Storm")
+   ;;                        ("r" "Recurring")
+   ;;                        ("b" "Bookmarks")
+   ;;                        ("s" "Snippets")
+   ;;                        ("n" "Notes")
+   ;;                        ("t" "Tasks")
+   ;;                        ("d" "Daily Check")
+   ;;                        ))
+
+   ;; (setq org-agenda-files (list))
+
+   ;; (add-to-list 'org-agenda-files (concat journal-base-dir journal-name))
+   ;; (add-to-list 'org-agenda-files (concat journal-base-dir "junk.org"))
+   ;; (add-to-list 'org-agenda-files (concat journal-base-dir "done.org"))
+
+   ;; (setq org-refile-targets
+   ;;       '((nil :maxlevel . 3)
+   ;;         (org-agenda-files :maxlevel . 3)))
+
+   ;; (setq org-capture-templates (list))
+   ;; (dolist (dtype document-types)
+   ;;   (setq tchar (car dtype))
+   ;;   (setq tlabel (string-join (cdr dtype) ""))
+   ;;   (setq llabel (downcase tlabel))
+   ;;   (add-to-list 'org-capture-templates
+   ;;                `(,tchar ,tlabel entry (file+headline ,(concat journal-base-dir journal-name) , tlabel) "* %? %^g\n%U" :empty-lines 1)))
+
+                                           ;(org-agenda-files)
+
+   (defun do-journal ()
+     "Load todays journal entry for book"
+     (interactive)
+     (find-file (concat journal-base-dir journal-name )))
+
+   ;; Journal Key bindings
+   (global-set-key (kbd "C-c b") 'do-journal)
+
+
+   (use-package org-roam
+     :ensure t
+     :init
+     (setq org-roam-v2-ack t)
+     :custom
+     (org-roam-directory "/home/work/ORG/ROAM/")
+     (org-roam-completion-everywhere t)
+     (org-roam-completion-system 'default)
+     (org-roam-dailies-directory "journal/")
+     (org-roam-capture-templates
+      '(
+        ("d" "default" entry
+         "* %?"
+         :if-new (file+head "${slug}.org"
+                            "#+title: ${title}\n\n")
+         :unnarrowed t)
+        ("s" "support" entry
+         (file "/home/work/ORG/ROAM/templates/support.org")
+         :if-new (file+head "support-${slug}.org"
+                            "#+title: ${title}\n\n")
+         :unnarrowed t)
+        ("p" "support" entry
+         (file "/home/work/ORG/ROAM/templates/mapping.org")
+         :if-new (file+head "support-${slug}.org"
+                            "#+title: ${title}\n\n"))
+        ("m" "meeting" entry
+         "* %?"
+         :if-new (file+head "meeting-${slug}.org"
+                            "#+title: ${title}\n\n")
+         :unnarrowed t)
+        ("d" "development" entry
+         "* %?"
+         :if-new (file+head "development-${slug}.org"
+                            "#+title: ${title}\n\n")
+         :unnarrowed t)
+        ("t" "test plan" entry
+         "* %?"
+         :if-new (file+head "test_plan-${slug}.org"
+                            "#+title: ${title}\n\n")
+         :unnarrowed t)
+        )
+      )
+     (org-roam-dailies-capture-templates
+      '(
+        ("d" "default" entry "* %?"
+         :if-new (file+head "%<%Y%m%d%H%M%S>.org"
+                            "#+title: %<%Y-%m-%d>\n\n[[roam:%<%Y-%B>]]\n\n")
+         :unnarrowed t)
+        ("t" "Task" entry "* TODO %?\n  %U\n  %a\n  %i"
+         :if-new (file+head "%<%Y%m%d%H%M%S>.org"
+                            "#+title: %<%Y-%m-%d>\n\n[[roam:%<%Y-%B>]]\n\n")
+         :empty-lines 1
+         :unnarrowed t)
+        ("j" "Journal" entry "* %<%I:%M %p> - Journal  :journal:\n\n%?\n\n"
+         :if-new (file+head "%<%Y%m%d%H%M%S>.org"
+                            "#+title: %<%Y-%m-%d>\n\n[[roam:%<%Y-%B>]]\n\n")
+         :unnarrowed t)
+        ("l" "Log Entry" entry "* %<%I:%M %p> - %?"
+         :if-new (file+head "%<%Y%m%d%H%M%S>.org"
+                            "#+title: %<%Y-%m-%d>\n\n[[roam:%<%Y-%B>]]\n\n")
+         :unnarrowed t)
+        ))
+     :bind (
+            ("C-c n l" . org-roam-buffer-toggle)
+             ("C-c n f" . org-roam-node-find)
+             ("C-c n g" . org-roam-graph)
+             ("C-c n i" . org-roam-node-insert)
+             ("C-c n c" . org-roam-capture)
+             ;; Dailies
+             ("C-c n j" . org-roam-dailies-capture-today)
+            )
+     :config
+     (org-roam-setup))
+
+ #+END_SRC
+
+** Load languages
+#+BEGIN_SRC emacs-lisp
+
+  (use-package plantuml-mode
+    :quelpa (plantuml-mode :fetcher github :repo "wildsoul/plantuml-mode"))
+
+  (setq org-plantuml-jar-path "/home/work/TOOLS/plantuml.jar")
+
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '(
+     (sql . t)
+     (js . t)
+     (plantuml . t)
+     ))
+
+  (defun my-org-confirm-babel-evaluate (lang body)
+    (not (member lang '("plantuml"))))
+
+  (setq org-image-actual-width 300)
+  (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
+  (add-hook 'org-babel-after-execute-hook 'org-display-inline-images 'append)
+  (add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
+
+  (defadvice org-display-inline-images
+    (around handle-openwith
+            (&optional include-linked refresh beg end) activate compile)
+    (if openwith-mode
+        (progn
+          (openwith-mode -1)
+          ad-do-it
+          (openwith-mode 1))
+      ad-do-it))
+#+END_SRC
+** Set Faces
+#+BEGIN_SRC emacs-lisp
+(custom-set-faces
+ '(org-document-title ((t (:weight bold :height 1.75 :underline nil))))
+ '(org-level-1 ((t (:weight bold :height 1.4))))
+ '(org-level-2 ((t (:weight bold :height 1.3))))
+ '(org-level-3 ((t (:weight bold :height 1.2))))
+ '(org-level-4 ((t (:weight bold :height 1.15)))))
+
+
+
+; (custom-set-faces
+;  '(org-document-title ((t (:inherit default :height 1.75 :underline nil))))
+;  '(org-level-1 ((t (:inherit default :height 1.4))))
+;  '(org-level-2 ((t (:inherit default :height 1.3))))
+;  '(org-level-3 ((t (:inherit default :height 1.2))))
+;  '(org-level-4 ((t (:inherit default :height 1.15)))))
+#+END_SRC
+
+** Org Bullets 
+#+BEGIN_SRC emacs-lisp
+
+  (use-package org-bullets        
+    :init
+    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
+#+END_SRC
+* Development
+** UUID
+#+BEGIN_SRC emacs-lisp
+  (use-package uuid
+    :ensure t)
+
+  (use-package uuidgen
+    :ensure t)
+#+END_SRC
+
+** Tern
+#+BEGIN_SRC emacs-lisp
+;  (use-package company-tern
+;    :config
+;    (add-to-list 'company-backend 'company-tern)
+;    (add-hook 'web-mode-hook 'tern-mode)
+;    )
+
+;;  (setq tern-command '("tern" "--no-port-file"))
+#+END_SRC
+
+** Scad mode
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package scad-preview)
+  (use-package scad-mode
+    :init
+    (progn
+      (autoload 'scad-mode "scad-mode" "A major mode for editing OpenSCAD code." t)
+      (add-to-list 'auto-mode-alist '("\\.scad$" . scad-mode))
+      ;; (add-hook 'scad-mode-hook 'scad-preview-mode)
+      ))
+#+END_SRC
+
+** Web Mode
+#+BEGIN_SRC emacs-lisp
+  (use-package emmet-mode
+    :ensure t
+    :diminish (emmet-mode . "ε")
+    :hook
+    ((rjsx-mode-hook . emmet-mode) ;; Auto-start on any markup modes
+     (vue-html-mode-hook . emmet-mode) ;; Auto-start on any markup modes
+     (sgml-mode-hook . emmet-mode) ;; Auto-start on any markup modes
+     (css-mode-hook . emmet-mode)) ;; enable Emmet's css abbreviation.
+    :init
+    (setq emmet-indentation 2
+          emmet-move-cursor-between-quotes t)
+    )
+
+  (use-package web-mode
+    :mode
+    (
+     "\\.js[x]?\\'"
+     "\\.html\\'"
+     "\\.ejs\\'")
+    :custom
+    ;; Some from https://github.com/fxbois/web-mode/issues/872#issue-219357898
+    (web-mode-markup-indent-offset 2)
+    (web-mode-css-indent-offset 2)
+    (web-mode-code-indent-offset 2)
+    (web-mode-script-padding 2)
+    (web-mode-attr-indent-offset 2)
+    (web-mode-enable-css-colorization t)
+    (web-mode-enable-auto-quoting nil)
+    (web-mode-enable-current-element-highlight t)
+
+    ;; Indent inline JS/CSS within HTML
+    ;; https://stackoverflow.com/a/36725155/3516664
+    (web-mode-script-padding 2)
+    (web-mode-style-padding 2)
+    (web-mode-block-padding 2)
+    :config
+    (add-to-list 'web-mode-indentation-params '("lineup-args" . nil))
+    (add-to-list 'web-mode-indentation-params '("lineup-calls" . nil))
+    (add-to-list 'web-mode-indentation-params '("lineup-concats" . nil))
+    (add-to-list 'web-mode-indentation-params '("lineup-quotes" . nil))
+    (add-to-list 'web-mode-indentation-params '("lineup-ternary" . nil))
+    (add-to-list 'web-mode-indentation-params '("case-extra-offset" . nil))
+    (add-to-list 'web-mode-indentation-params '("lineup-ternary" . nil))
+
+    (add-to-list 'auto-mode-alist '("\\.jsx?$" . web-mode))
+    (setq web-mode-content-types-alist
+          '(("jsx"  . "\\.js[x]?\\'")))
+    (add-hook 'web-mode-hook #'rainbow-delimiters-mode)
+      ;; (defun my-web-mode-hook ()
+      ;;   "Hooks for Web mode."
+      ;;   (setq web-mode-markup-indent-offset 2)
+      ;;   (setq web-mode-css-indent-offset 2)
+      ;;   (setq web-mode-code-indent-offset 2)
+      ;;   (flow-minor-mode))
+      ;; (add-hook 'web-mode-hook  'my-web-mode-hook)
+    )
+
+
+  (use-package web-beautify
+    :commands (web-beautify-css
+               web-beautify-css-buffer
+               web-beautify-html
+               web-beautify-html-buffer
+               web-beautify-js
+               web-beautify-js-buffer))
+
+  (use-package web-completion-data :ensure t)
+  (use-package web-mode-edit-element :ensure t)
+
+  (use-package flycheck-flow
+    :ensure t)
+
+  (use-package flow-minor-mode
+    :ensure t
+    :config
+    (progn
+      ;;(add-hook 'web-mode-hook 'flow-minor-mode)
+      (defun flow/set-flow-executable ()
+         (interactive)
+      ;;   (let* ((os (pcase system-type
+      ;;                ('darwin "osx")
+      ;;                ('gnu/linux "linux64")
+      ;;                (_ nil)))
+      ;;          (root (locate-dominating-file  buffer-file-name  "node_modules/flow-bin"))
+      ;;          (executable (car (file-expand-wildcards
+      ;;                            (concat root "node_modules/flow-bin/*" os "*/flow")))))
+      ;;     (setq-local company-flow-executable executable)
+      ;;     ;; These are not necessary for this package, but a good idea if you use
+      ;;     ;; these other packages
+      ;;     (setq-local flow-minor-default-binary executable)
+      ;; (setq-local flycheck-javascript-flow-executable "/usr/bin/flow"))
+      (setq-local flycheck-javascript-flow-executable "/home/work/.config/yarn/global/node_modules/.bin/flow"))
+
+      ;; ;; Set this to the mode you use, I use rjsx-mode
+      (add-hook 'web-mode-hook #'flow/set-flow-executable t)
+
+      (with-eval-after-load 'flycheck
+        (flycheck-add-mode 'javascript-flow 'flow-minor-mode))
+
+      ))
+#+END_SRC
+** Typescript
+#+BEGIN_SRC emacs-lisp
+  (use-package tide
+    :config
+    (progn
+      (defun setup-tide-mode ()
+        (interactive)
+        (tide-setup)
+        (flycheck-mode +1)
+        (setq flycheck-check-syntax-automatically '(save mode-enabled))
+        (eldoc-mode +1)
+        (tide-hl-identifier-mode +1)
+        ;; company is an optional dependency. You have to
+        ;; install it separately via package-install
+        ;; `M-x package-install [ret] company`
+        (company-mode +1))
+
+      ;; (and )ligns annotation to the right hand side
+      (setq company-tooltip-align-annotations t)
+      (setq typescript-indent-level 2)
+
+      ;; (format "message" format-args)ormats the buffer before saving
+      ;; (add-hook 'before-save-hook 'tide-format-before-save)
+
+      (add-hook 'typescript-mode-hook #'setup-tide-mode)))
+#+END_SRC
+
+** Json Mode
+#+BEGIN_SRC emacs-lisp
+  ;(use-package json-mode)
+  ;(use-package jq-mode)
+  ;(use-package jq-format)
+  (use-package counsel-jq)
+
+#+END_SRC
+** Verb (Http Client)
+#+BEGIN_SRC emacs-lisp
+  (use-package verb
+    :config
+    (with-eval-after-load 'org
+      (define-key org-mode-map (kbd "C-c C-r") verb-command-map)))
+#+END_SRC
+
+** Handlerbar
+#+BEGIN_SRC emacs-lisp
+  (use-package handlebars-mode
+    :ensure t)
+#+END_SRC
+* Custom
+** Escape binding
+#+BEGIN_SRC emacs-lisp
+  ; Map escape to cancel (like C-g)...
+  (define-key isearch-mode-map [escape] 'isearch-abort)   ;; isearch
+  (define-key isearch-mode-map "\e" 'isearch-abort)   ;; \e seems to work better for terminals
+  (global-set-key [escape] 'keyboard-escape-quit)         ;; everywhere else
+  (defadvice keyboard-escape-quit
+    (around keyboard-escape-quit-dont-close-windows activate)
+    (let ((buffer-quit-function (lambda () ())))
+      ad-do-it))
+#+END_SRC
+** Focus to new window
+#+BEGIN_SRC emacs-lisp
+  (defadvice split-window (after move-point-to-new-window activate)
+    "Moves the point to the newly created window after splitting."
+    (other-window 1))
+#+END_SRC
+
+** Zoom
+#+BEGIN_SRC emacs-lisp
+  ;; scroll zoom
+  (global-set-key [C-mouse-4] 'text-scale-increase)
+  (global-set-key (kbd "C-+") 'text-scale-increase)
+  (global-set-key [C-mouse-5] 'text-scale-decrease)
+  (global-set-key (kbd "C--") 'text-scale-decrease)
+#+END_SRC
+** Find file at the point
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c f") 'find-file-at-point)
+#+END_SRC
+** New Journal Entries
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c j") 'org-journal-new-entry)
+#+END_SRC
+** Kill this buffer
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-x /") 'kill-this-buffer)
+  (global-set-key (kbd "<C-f4>") 'delete-window)
+#+END_SRC
+** Bookmarks at Startup
+#+BEGIN_SRC emacs-lisp
+  (bookmark-bmenu-list)
+  (switch-to-buffer "*Bookmark List*")
+#+end_SRC
+** Highlight
+#+BEGIN_SRC emacs-lisp
+  (set-face-attribute 'region nil :background "#E0115F" :foreground "#fff" :weight 'bold)
+#+END_SRC
+** Load Custom Function
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'after-change-major-mode-hook
+            (lambda ()
+              (modify-syntax-entry ?_ "w")))
+
+  (message "start load dir")
+  (use-package load-dir
+    :ensure t)
+#+END_SRC
+** New File
+#+BEGIN_SRC emacs-lisp
+  (defun new-file (msg)
+    "create new file"
+    (interactive "sEnter Context: ")
+    (find-file (expand-file-name (concat "/home/work/ORG/log/" (format-time-string "%Y%m%d%T") "-" msg))))
+
+  (global-set-key (kbd "C-c y") 'new-file)
+
+  (defun today-file ()
+    "create today file"
+    (interactive)
+    (find-file (expand-file-name (concat "/home/work/ORG/estaf/" (format-time-string "%Y-%m") "/" (format-time-string "%d") ".org"))))
+
+  (global-set-key (kbd "C-c e") 'today-file)
+#+END_SRC
+** Page Up/Down
+#+BEGIN_SRC emacs-lisp
+  (global-set-key [mouse-9] 'scroll-down-command)
+  (global-set-key [mouse-8] 'scroll-up-command)
+#+END_SRC
+** Paste Screenshot
+#+BEGIN_SRC emacs-lisp
+  (defun my-org-screenshot ()
+    "Take a screenshot into a time stamped unique-named file in the
+  same directory as the org-buffer and insert a link to this file."
+    (interactive)
+    (setq filename
+          (concat
+           (make-temp-name
+            (concat (buffer-file-name)
+                    "_"
+                    (format-time-string "%Y%m%d_%H%M%S_")) ) ".png"))
+    (call-process "import" nil nil nil filename)
+    (insert (concat "[[" filename "]]"))
+    (org-display-inline-images))
+#+END_SRC
+
+** Copy Buffer Path
+#+BEGIN_SRC emacs-lisp
+
+  (defun copy-file-name-to-clipboard ()
+    "Copy the current buffer file name to the clipboard."
+    (interactive)
+    (let ((filename (if (equal major-mode 'dired-mode)
+                        default-directory
+                      (buffer-file-name))))
+      (when filename
+        (kill-new filename)
+        (message "Copied buffer file name '%s' to the clipboard." filename))))
+
+#+END_SRC
+* promoted
+** Hydra
+#+BEGIN_SRC emacs-lisp
+  (use-package hydra
+    :ensure t
+    :bind ("C-c w" . hydra-clock/body))
+
+  (defhydra hydra-clock (:color blue)
+    "
+      ^
+      ^Clock^             ^Do^
+      ^─────^─────────────^──^─────────
+      _q_ quit            _c_ cancel
+      ^^                  _d_ display
+      ^^                  _e_ effort
+      ^^                  _i_ in
+      ^^                  _j_ jump
+      ^^                  _o_ out
+      ^^                  _r_ report
+      ^^                  ^^
+      "
+    ("q" nil)
+    ("c" org-clock-cancel :color pink)
+    ("d" org-clock-display)
+    ("e" org-clock-modify-effort-estimate)
+    ("i" org-clock-in)
+    ("j" org-clock-goto)
+    ("o" org-clock-out)
+    ("r" org-clock-report))
+
+
+#+END_SRC
+** Copyit
+#+BEGIN_SRC emacs-lisp
+  (use-package copyit
+    :ensure t)
+#+END_SRC
+** Jest
+#+BEGIN_SRC emacs-lisp
+  (use-package jest-test-mode
+    :after (web-mode)
+    :config
+    (setq  jest-pdb-track nil)
+    (defun jest--transform-arguments (args)
+      "Transform ARGS so that jest understands them."
+      (-->
+       args
+       (jest--quote-string-option it "-k")
+       (jest--quote-string-option it "-m")))
+    (defun jest--project-root ()
+      "Find the project root directory."
+      (locate-dominating-file (buffer-file-name) "package.json"))
+    (defun jest-wallex-manager ()
+      "Set jest-executable for wallex-base manager"
+      (interactive)
+      (defun jest-test-command (filename)
+        "Format test arguments for FILENAME."
+        (format "SLACK_TEST_MODE=true EMAIL_TEST_MODE=true npm run test:manager -- --detectOpenHandles %s %s"
+                (mapconcat #'shell-quote-argument jest-test-options " ")
+
+                filename)))
+    (defun jest-wallex-manager-with-slack ()
+      "Set jest-executable for wallex-base manager with slack enabled"
+      (interactive)
+      (jest-test-update-last-test "SLACK_TEST_MODE=false EMAIL_TEST_MODE=true npm run test:manager -- "))
+    :hook (web-mode . jest-test-mode))
+#+END_SRC
+** Origami Code Folding
+#+BEGIN_SRC emacs-lisp
+  (use-package origami)
+#+END_SRC
+** Undo Tree
+   Menampilkan history undo dalam bentuk tree.
+#+BEGIN_SRC emacs-lisp
+  (use-package undo-tree
+    :diminish undo-tree-mode
+    :init
+    (global-undo-tree-mode)
+    :config
+    (progn
+      (global-set-key (kbd "C-z") 'undo)
+      (global-set-key (kbd "C-S-z") 'redo)
+      (global-set-key (kbd "M-/") 'undo-tree-visualize))
+    :custom
+    (undo-tree-visualizer-diff t)
+    (undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
+    (undo-tree-visualizer-timestamps t))
+
+#+END_SRC
+
+** Buffer Flip
+#+BEGIN_SRC emacs-lisp
+  (use-package buffer-flip
+    :bind  (("C-<tab>" . buffer-flip)
+            :map buffer-flip-map
+            ( "C-<tab>" .   buffer-flip-forward) 
+            ( "C-S-<tab>" . buffer-flip-backward) 
+            ( "C-ESC" .     buffer-flip-abort))
+    :config
+    (setq buffer-flip-skip-patterns
+          '("^\\*helm\\b"
+            "^\\*swiper\\*$")))
+#+END_SRC
+** Pretty Hydra
+** OV
+https://github.com/emacsorphanage/ov
+

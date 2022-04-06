@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: restfulScript
+# key: restfulScript
+# --
+    <script src="func/states/$1.state.js"></script>
+    <script src="func/controllers/$1_list.ctrl.js"></script>
+    <script src="func/controllers/$1_edit.ctrl.js"></script>
+

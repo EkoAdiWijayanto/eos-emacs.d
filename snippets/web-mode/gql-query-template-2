@@ -1,0 +1,106 @@
+# -*- mode: snippet -*-
+# name: graphql query template 2
+# key: gqtpl2
+# --
+// $1
+import {
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLInt,
+  GraphQLFloat,
+  GraphQLList,
+} from 'graphql';
+import {
+  Wallex,
+  $1Adapter,
+  $1,
+  PageQueryAdapter,
+  PageResultAdapter
+} from '@wallex/base';
+import { addNodeDefinition, nodeInterface, defaultTypeFields } from './nodeDef';
+
+import {
+  connectionArgs,
+  connectionDefinitions,
+  globalIdField,
+  cursorToOffset
+} from 'graphql-relay'
+
+import { GraphQLJSONObject } from 'graphql-type-json'
+
+import ConnectionUtil from '../util/ConnectionUtil';
+
+let ${1:$(eaw/lower-camel-case yas/text)}Type = new GraphQLObjectType({
+  name: '$1',
+  fields: {
+    ...defaultTypeFields('$1'),
+    $0;
+  }
+});
+
+addNodeDefinition({
+  $1: async id => {
+    return await Wallex.${1:$(eaw/lower-camel-case yas/text)}Service.findOne(id)
+  }
+}, {
+  $1: ${1:$(eaw/lower-camel-case yas/text)}Type
+});
+
+let {
+  connectionType: ${1:$(eaw/lower-camel-case yas/text)}Connection,
+  edgeType: ${1:$(eaw/lower-camel-case yas/text)}Edge,
+} = connectionDefinitions({
+  name: '$1',
+  nodeType: ${1:$(eaw/lower-camel-case yas/text)}Type
+});
+
+let ${1:$(eaw/lower-camel-case yas/text)}s = {
+  type: ${1:$(eaw/lower-camel-case yas/text)}Connection,
+  args: {
+    ...ConnectionUtil.defaultConnectionArgs
+  },
+  resolve: async(_, args, context) => {    
+    if (!context.user) return undefined;
+    if (!context.isAdmin) {
+      let { accountId } = context.user;
+      args = {
+        ...args,
+        filters: {
+          ...(args.filters ? { ...args.filters, accountId } : { accountId })
+        }
+      }
+    }
+    
+    let query = PageQueryAdapter.fromConnectionArgs(args, $1Adapter.fieldMap);
+    let pageResult = await Wallex.${1:$(eaw/lower-camel-case yas/text)}Service.findPage(query);
+    return PageResultAdapter.toConnection(pageResult, args);
+  }
+};
+
+let ${1:$(eaw/lower-camel-case yas/text)} = {
+  type: ${1:$(eaw/lower-camel-case yas/text)}Type,
+  args: {
+    id: {
+      type: GraphQLString
+    }
+  },
+  resolve: async(_, args, context) => {
+    if (!context.user) return undefined;
+    let filter = {
+      id: args.id
+    }
+    if (!context.isAdmin) {
+      filter.accountId = context.user.accountId
+    }
+    let ${1:$(eaw/lower-camel-case yas/text)} = await Wallex.${1:$(eaw/lower-camel-case yas/text)}Service.findOneByFilter(filter);
+    return Object.assign(new $1, ${1:$(eaw/lower-camel-case yas/text)});
+  }
+}
+
+module.exports = {
+  ${1:$(eaw/lower-camel-case yas/text)}Type,
+  ${1:$(eaw/lower-camel-case yas/text)}Connection,
+  ${1:$(eaw/lower-camel-case yas/text)}Edge,
+  ${1:$(eaw/lower-camel-case yas/text)}s,
+  ${1:$(eaw/lower-camel-case yas/text)},
+}

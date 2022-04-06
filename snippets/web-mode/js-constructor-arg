@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: constructor arg
+# key: carg
+# --
+${1:$(eaw/lower-camel-case yas/text)} = new $1(),$0

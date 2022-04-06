@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: arrow
+# key: =>
+# --
+${1:$$(let ((type (yas-choose-value '("sync" "async "))))
+           (if (equal type "sync") "" type))}($2) => {
+  $0
+}

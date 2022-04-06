@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: graphql types
+# key: gqtype
+# --
+${1:$$(yas-choose-value '("GraphQLSchema," "GraphQLDirective," "GraphQLScalarType," "GraphQLObjectType," "GraphQLInterfaceType," "GraphQLUnionType," "GraphQLEnumType," "GraphQLInputObjectType," "GraphQLList," "GraphQLNonNull," "specifiedScalarTypes," "GraphQLInt," "GraphQLFloat," "GraphQLString," "GraphQLBoolean," "GraphQLID,"))}

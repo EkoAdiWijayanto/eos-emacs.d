@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: selectAM
+# key: selectAM
+# --
+                    <md-input-container>
+                        <label>$1</label>
+                        <md-select ng-model="editVm.data.$2">
+                            <md-option ng-repeat="$2 in editVm.$2s" ng-value="$2._id">
+                                {{$2.code}}|{{$2.name}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+                    <br/>

@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: restfulModelRoute
+# key: restfulModelRoute
+# --
+var $1Model = require('../models/$1s');
+$1Model.register(router, '/$1s');

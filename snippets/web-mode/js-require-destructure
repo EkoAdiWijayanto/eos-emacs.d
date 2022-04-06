@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: require destructure
+# key: requdes
+# --
+const { ${2:${1:$(file-name-base yas/text)}} } = require('$1'); $0

@@ -1,0 +1,33 @@
+# -*- mode: snippet -*-
+# name: restfulEdit
+# key: restfulEdit
+# --
+/* globals restfulEdit */
+(function() {
+    'use strict';
+
+    var editCtrl = restfulEdit({
+        resource: '$1',
+        shortid: '$2'
+    });
+
+    editCtrl.prototype.initialize = function() {
+
+        var editVm = this;
+
+        angular.extend(editVm, {
+            doSave: function() {
+                if (editVm.validateForm()) {
+                    var ops = editVm.ops();
+                    editVm[ops]().then(function() {
+                        editVm[ops + 'Succeed']();
+                    });
+                }
+            }
+        });
+    };
+
+
+    angular.module('app')
+        .controller('$3EditCtrl', ['$injector', '$scope', editCtrl]);
+})();

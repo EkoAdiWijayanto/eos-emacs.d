@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: constructor setter
+# key: cset
+# --
+this.$1 = $1; $0

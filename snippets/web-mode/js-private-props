@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: private props
+# key: props
+# --
+// $1
+_${1:$(string-inflection-lower-camelcase-function yas/text)}; $0
+
+get ${1:$(string-inflection-lower-camelcase-function yas/text)}() {
+  return this._${1:$(string-inflection-lower-camelcase-function yas/text)};
+}
+
+set ${1:$(string-inflection-lower-camelcase-function yas/text)}(value) {
+  this._${1:$(string-inflection-lower-camelcase-function yas/text)} = value;
+}

@@ -1,0 +1,24 @@
+# -*- mode: snippet -*-
+# name: Vue Component Template
+# key: vcomp
+# --
+<template>
+  <div class="$1">
+    $2
+  </div>
+</template>
+
+<script>
+export default {
+  name: '$3',
+	data () {
+	  return {
+		  $4
+		}
+	}
+}
+</script>
+
+<style $5 scoped>
+$6
+</style>

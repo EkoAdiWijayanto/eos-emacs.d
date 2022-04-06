@@ -1,0 +1,18 @@
+# -*- mode: snippet -*-
+# name: photoUpload
+# key: photoUpload
+# --
+<h2>$1</h2>
+                    <lf-ng-md-file-input lf-maxcount="10" lf-files="editVm.$2Photo" lf-placeholder="Choose Images" lf-browse-label="Browse" lf-drag-and-drop-label="Drag & Drop here" lf-remove-label="Remove" multiple drag preview>
+                    </lf-ng-md-file-input>
+
+                    <div layout="row" layout-wrap>
+                        <div class="gridgal" ng-repeat="(file,image) in editVm.$2PhotoList">
+                            <div style="position:absolute;">
+                                <md-button class="md-fab md-warn md-mini" ng-click="editVm.$2PhotoRemove(file)">
+                                    <md-icon>close</md-icon>
+                                </md-button>
+                            </div>
+                            <img width="100%" alt="{{ image }}" ng-src="{{ image }}" />
+                        </div>
+                    </div>

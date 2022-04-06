@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: let destructure
+# key: letdes
+# --
+let { $1 } = $2; $0

@@ -1,0 +1,23 @@
+# -*- mode: snippet -*-
+# name: restfulList
+# key: restfulList
+# --
+/* globals restfulList */
+(function() {
+    'use strict';
+
+    var listCtrl = restfulList({
+        resource: '$1',
+        sort: '$3',
+        title: '$2'
+    });
+
+    // jshint unused:false
+    listCtrl.prototype.initialize = function($injector, $scope) {
+
+        this.getData();
+    };
+
+    angular.module('app')
+        .controller('$4ListCtrl', ['$injector', '$scope', listCtrl]);
+})();

@@ -1,0 +1,21 @@
+# -*- mode: snippet -*-
+# name: Feathers Test Skeleton
+# key: ftest
+# --
+const { app, port, db, url, cleanDB } = require('./utils.js')
+const rp = require('request-promise')
+
+describe('Feathers application tests', () => {
+  /*before(function(done) {
+    this.server = app.listen(port)
+    this.server.once('listening', () => done())
+  })
+
+  after(function(done) {
+    this.server.close(done)
+  })*/
+
+  it('$1', () => {
+    $2
+  })
+})

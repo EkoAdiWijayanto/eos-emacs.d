@@ -1,0 +1,19 @@
+# -*- mode: snippet -*-
+# name: restfulEdit
+# key: restfulEdit
+# --
+<div class="content-data" ng-init="editVm.construct()">
+
+    <rest-edit-toolbar no-edit no-delete save="editVm.doSave()" back="editVm.back()" delete-data="editVm.deleteData(event)" selected="selected">
+    </rest-edit-toolbar>
+
+    <md-tabs md-dynamic-height md-border-bottom>
+        <md-tab label="Description">
+            <md-content class="md-padding">
+                <form name="dataForm">
+		      $1
+		</form>
+            </md-content>
+        </md-tab>
+    </md-tabs>
+</div>

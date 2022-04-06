@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: cdocs
+# key: cdocs
+# --
+const docs = require('./docs');

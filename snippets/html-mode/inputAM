@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: inputAM
+# key: inputAM
+# --
+                    <md-input-container>
+                        <label>$1</label>
+                        <input ng-model="editVm.data.$2" name="$2">
+                    </md-input-container>

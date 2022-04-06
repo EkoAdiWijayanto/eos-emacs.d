@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: restfulLayout
+# key: restfulLayout
+# --
+<div layout="row" layout-padding>
+    <div>
+        <img width="36px" alt="" src="images/icons/$1.png" />
+    </div>
+    <h1>$2</h1>
+</div>
+<md-content layout-margin layout-padding flex class="main-content" ui-view>
+</md-content>

@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: decit
+# key: decit
+# --
+${1:$$(let ((type (yas-choose-value '("describe" "it" "test"))))
+           type)}('$2', $0);

@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: Feathers Service Documentation
+# key: fServiceDocs
+# --
+const serviceHandler = createService(options)
+
+serviceHandler.docs = docs;
+
+app.use('/$1', serviceHandler)

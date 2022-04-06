@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: dom_get_set
+# key: dgs
+# --
+
+get $1(): $2 {
+    return this._$1;
+  }
+
+  set $1(value: $2) {
+    this._$1 = value;
+  }
+
+  

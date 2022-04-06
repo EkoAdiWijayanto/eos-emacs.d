@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: graphql object type prop
+# key: gqprop
+# --
+$1: { type: $0 }

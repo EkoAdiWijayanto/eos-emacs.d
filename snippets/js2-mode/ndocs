@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: ndocs
+# key: ndocs
+# --
+  var _service = new XeroProto({
+    resource: '$1'
+  });
+
+  _service.docs = docs;

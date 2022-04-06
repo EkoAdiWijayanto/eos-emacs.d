@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: $http
+# key: $http
+# --
+return $http({
+  method: '$1',
+  url: $2,
+  data: {
+    $3
+  }
+})
+.then(function (resp) {
+  $4	    
+});

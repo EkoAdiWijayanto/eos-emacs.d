@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: relay types
+# key: rtype
+# --
+${1:$$(yas-choose-value '("backwardConnectionArgs," "connectionArgs," "connectionDefinitions," "forwardConnectionArgs," "connectionFromArray," "connectionFromArraySlice," "connectionFromPromisedArray," "connectionFromPromisedArraySlice," "cursorForObjectInConnection," "cursorToOffset," "getOffsetWithDefault," "offsetToCursor,"))}

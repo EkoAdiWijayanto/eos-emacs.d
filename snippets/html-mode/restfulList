@@ -1,0 +1,27 @@
+# -*- mode: snippet -*-
+# name: restfulList
+# key: restfulList
+# --
+<div class="content-data" ng-init="listVm.construct()">
+    <rest-list-toolbar edit-data="listVm.editData()" delete-data="listVm.deleteData(event)" selected-data="selected"></rest-list-toolbar>
+
+    <md-table-container>
+        <table md-table md-progress="promise" md-row-select ng-model="selected">
+            <thead md-head md-order="query.sort" md-on-reorder="getData">
+                <tr md-row>
+                    <th md-column md-order-by="code"><span>Code</span></th>
+                    <th md-column md-order-by="name"><span>Name</span></th>
+                </tr>
+            </thead>
+            <tbody md-body>
+                <tr md-row md-select="data" md-select-id="_id" md-auto-select ng-repeat="data in listVm.listData">
+                    <td md-cell>{{data.code}}</td>
+                    <td md-cell>{{data.name}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </md-table-container>
+
+    <md-table-pagination md-limit="listVm.query.limit" md-limit-options="[5, 10, 15]" md-page="listVm.query.page" md-total="{{listVm.dataCount}}" md-on-paginate="listVm.getData"></md-table-pagination>
+
+</div>

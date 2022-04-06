@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: log log
+# key: ll
+# --
+log.log({ $2 }, '$1');
