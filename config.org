@@ -32,36 +32,38 @@ Setup window behaviour
 Setup emacs packages & repository
 
 #+BEGIN_SRC emacs-lisp
-    (require 'package)
+  (require 'package)
 
-    (setq package-enable-at-startup nil)
+  (setq package-enable-at-startup nil)
 
-    (setq package-archives
-          '(("GNU ELPA"     . "http://elpa.gnu.org/packages/")
-            ("MELPA Stable" . "https://stable.melpa.org/packages/")
-            ("MELPA"        . "https://melpa.org/packages/"))
-          package-archive-priorities
-          '(("MELPA Stable" . 10)
-            ("GNU ELPA"     . 5)
-            ("MELPA"        . 0)))
+  (setq package-archives
+        '(("GNU ELPA"     . "http://elpa.gnu.org/packages/")
+          ("MELPA Stable" . "https://stable.melpa.org/packages/")
+          ("MELPA"        . "https://melpa.org/packages/"))
+        package-archive-priorities
+        '(("MELPA Stable" . 10)
+          ("GNU ELPA"     . 5)
+          ("MELPA"        . 0)))
 
-    (unless (package-installed-p 'use-package)
-      (package-refresh-contents)
-      (package-install 'use-package))
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
 
-    (setq use-package-verbose t)
-    (setq use-package-always-ensure t)
+  (setq use-package-verbose t)
+  (setq use-package-always-ensure t)
 
-    (use-package quelpa-use-package
-      :ensure t
-      :init
-      (setq quelpa-update-melpa-p nil))
+  (use-package quelpa-use-package
+    :ensure t
+    :init
+    (setq quelpa-update-melpa-p nil))
 
-    (use-package auto-compile
-      :config
-      (auto-compile-on-load-mode))
+  (use-package auto-compile
+    :config
+    (auto-compile-on-load-mode))
 
-    (use-package try)
+  (use-package try)
+
+  (use-package diminish)
 
   (setenv "PATH" (concat (getenv "PATH") ":" (expand-file-name "~/.nvm/versions/node/v12.18.0/bin")))
   (setq exec-path (append exec-path (list (expand-file-name "~/.nvm/versions/node/v12.18.0/bin"))))
@@ -371,23 +373,32 @@ Disable open new frame
 ** Spaceline
 #+BEGIN_SRC emacs-lisp
 
-  (use-package spaceline-all-the-icons
-    :ensure t)
+  ;; (use-package spaceline-all-the-icons
+  ;;   :ensure t)
 
-  (use-package spaceline
-    :ensure t
-    :config (progn
-              (require 'spaceline-config)
-              (spaceline-all-the-icons-theme)
-              ;; Toggles
-              (spaceline-toggle-all-the-icons-buffer-size-off)
-              (spaceline-toggle-all-the-icons-vc-icon-on)
-              (spaceline-toggle-all-the-icons-vc-status-on)
-              (spaceline-toggle-all-the-icons-git-status-on)
-              (spaceline-toggle-all-the-icons-flycheck-status-on)
-              (spaceline-toggle-all-the-icons-time-off)
-              )
-             )
+  ;; (use-package spaceline
+  ;;   :ensure t
+  ;;   :config (progn
+  ;;             (require 'spaceline-config)
+  ;;             (spaceline-all-the-icons-theme)
+  ;;             ;; Toggles
+  ;;             (spaceline-toggle-all-the-icons-buffer-size-off)
+  ;;             (spaceline-toggle-all-the-icons-vc-icon-on)
+  ;;             (spaceline-toggle-all-the-icons-vc-status-on)
+  ;;             (spaceline-toggle-all-the-icons-git-status-on)
+  ;;             (spaceline-toggle-all-the-icons-flycheck-status-on)
+  ;;             (spaceline-toggle-all-the-icons-time-off)
+
+  ;;             (setq-default
+  ;;              powerline-height 20
+  ;;              powerline-default-separator 'wave
+  ;;              spaceline-flycheck-bullet "❖ %s"
+  ;;              spaceline-separator-dir-left '(right . right)
+  ;;              spaceline-separator-dir-right '(left . left)
+  ;;              )
+  ;;             )
+  ;;   )
+
 #+END_SRC
 ** Ace Window
 #+BEGIN_SRC emacs-lisp
