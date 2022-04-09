@@ -376,8 +376,11 @@ Disable open new frame
 
 #+END_SRC
 
-** Spaceline
+** Modeline
 #+BEGIN_SRC emacs-lisp
+  (use-package mood-line
+    :config (mood-line-mode))
+  
 
   ;; (use-package spaceline-all-the-icons
   ;;   :ensure t)
