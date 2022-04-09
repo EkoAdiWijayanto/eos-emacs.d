@@ -315,12 +315,14 @@ Disable open new frame
 #+END_SRC
 ** Set Theme
 #+BEGIN_SRC emacs-lisp
+  ;; cobalt
   (use-package color-theme-modern
     :config
-    (load-theme #'clarity t)
+    (load-theme 'cobalt t)
     ;;(set-background-color "#151A28")
     ;;(set-face-background 'hl-line "#555555")
     ;;(set-face-foreground 'hl-line "#ffffff")
+    (set-frame-font "Source Code Pro Medium 18" nil t)
     )
 #+END_SRC
 ** Swiper 
