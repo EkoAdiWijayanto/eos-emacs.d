@@ -183,6 +183,21 @@ Disable open new frame
   ;;   (selected-frame))
 #+END_SRC
 * Packages
+** Which Key
+   Menampilkan informasi shortcut keyboard.
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :defer 10
+    :diminish which-key-mode 
+    :init
+    (which-key-mode 1))
+    :config
+    (progn
+      (setq which-key-popup-type 'side-window)
+      (setq which-key-side-window-location 'right)
+      (setq which-key-side-window-max-height 0.66)
+      )
+#+END_SRC
 ** Indent Guide
 #+BEGIN_SRC emacs-lisp
   (use-package indent-guide
@@ -300,27 +315,13 @@ Disable open new frame
 #+END_SRC
 ** Set Theme
 #+BEGIN_SRC emacs-lisp
-  (use-package cyberpunk-theme
+  (use-package color-theme-modern
     :config
-    (load-theme #'cyberpunk t)
-    (set-background-color "#151A28")
-    (set-face-background 'hl-line "#555555")
-    (set-face-foreground 'hl-line "#ffffff")
+    (load-theme #'clarity t)
+    ;;(set-background-color "#151A28")
+    ;;(set-face-background 'hl-line "#555555")
+    ;;(set-face-foreground 'hl-line "#ffffff")
     )
-#+END_SRC
-** Which Key
-   Menampilkan informasi shortcut keyboard.
-#+BEGIN_SRC emacs-lisp
-  (use-package which-key
-    :defer 10
-    :diminish which-key-mode 
-    :init
-    (progn
-      (setq which-key-popup-type 'side-window)
-      (setq which-key-side-window-location 'right)
-      (setq which-key-side-window-max-height 0.66)
-      )
-    :config (which-key-mode 1))
 #+END_SRC
 ** Swiper 
 #+BEGIN_SRC emacs-lisp
