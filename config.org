@@ -569,6 +569,11 @@ Disable open new frame
            ))
 #+END_SRC
 
+** IEdit
+#+BEGIN_SRC emacs-lisp
+  (use-package iedit :defer t)
+#+END_SRC
+
 ** Hungry Delete
 #+BEGIN_SRC emacs-lisp
 
