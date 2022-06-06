@@ -1080,7 +1080,7 @@ Disable open new frame
 
 ** Json Mode
 #+BEGIN_SRC emacs-lisp
-  ;(use-package json-mode)
+  (use-package json-mode)
   ;(use-package jq-mode)
   ;(use-package jq-format)
   (use-package counsel-jq)
