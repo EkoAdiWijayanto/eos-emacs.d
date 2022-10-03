@@ -799,7 +799,7 @@ Disable open new frame
          :if-new (file+head "support-${slug}.org"
                             "#+title: ${title}\n\n")
          :unnarrowed t)
-        ("p" "support" entry
+        ("p" "support mapping" entry
          (file "/home/work/ORG/ROAM/templates/mapping.org")
          :if-new (file+head "support-${slug}.org"
                             "#+title: ${title}\n\n"))
