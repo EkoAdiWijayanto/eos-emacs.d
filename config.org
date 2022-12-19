@@ -334,39 +334,6 @@
 
   (use-package git-timemachine)
 #+END_SRC
-** Flycheck
-#+BEGIN_SRC emacs-lisp
-  (use-package flycheck
-    :ensure t
-    :config
-    (global-flycheck-mode)
-    (setq flycheck-check-syntax-automatically '(mode-enabled save))
-    (setq flycheck-checker-error-threshold 2000)
-    (flycheck-add-mode 'javascript-eslint 'web-mode) ;(with-eval-after-load 'lsp-mode (require 'lsp-flycheck))
-    ;; (setq-default flycheck-disabled-checkers
-    ;;   (append flycheck-disabled-checkers
-    ;;           '(javascript-jscs)
-    ;;           '(json-jsonlist)
-    ;;           '(javascript-flow)
-    ;;           '(json-jsonlist)
-    ;;           '(javascript-jshint)))
-    (flycheck-add-mode 'javascript-eslint 'web-mode)
-    )
-
-  ;; use local eslint from node_modules before global
-  ;; http://emacs.stackexchange.com/questions/21205/flycheck-with-file-relative-eslint-executable
-  ;; (defun my/use-eslint-from-node-modules ()
-  ;;   (let* ((root (locate-dominating-file
-  ;;                 (or (buffer-file-name) default-directory)
-  ;;                 "node_modules"))
-  ;;          (eslint (and root
-  ;;                       (expand-file-name "node_modules/eslint/bin/eslint.js"
-  ;;                                         root))))
-  ;;     (when (and eslint (file-executable-p eslint))
-  ;;       (setq-local flycheck-javascript-eslint-executable eslint))))
-  ;; (add-hook 'flycheck-mode-hook #'my/use-eslint-from-node-modules)
-
-#+END_SRC
 ** Paradox
 #+BEGIN_SRC emacs-lisp
   (use-package paradox
@@ -446,33 +413,6 @@
 #+BEGIN_SRC emacs-lisp
   (use-package mood-line
     :config (mood-line-mode))
-  
-
-  ;; (use-package spaceline-all-the-icons
-  ;;   :ensure t)
-
-  ;; (use-package spaceline
-  ;;   :ensure t
-  ;;   :config (progn
-  ;;             (require 'spaceline-config)
-  ;;             (spaceline-all-the-icons-theme)
-  ;;             ;; Toggles
-  ;;             (spaceline-toggle-all-the-icons-buffer-size-off)
-  ;;             (spaceline-toggle-all-the-icons-vc-icon-on)
-  ;;             (spaceline-toggle-all-the-icons-vc-status-on)
-  ;;             (spaceline-toggle-all-the-icons-git-status-on)
-  ;;             (spaceline-toggle-all-the-icons-flycheck-status-on)
-  ;;             (spaceline-toggle-all-the-icons-time-off)
-
-  ;;             (setq-default
-  ;;              powerline-height 20
-  ;;              powerline-default-separator 'wave
-  ;;              spaceline-flycheck-bullet "❖ %s"
-  ;;              spaceline-separator-dir-left '(right . right)
-  ;;              spaceline-separator-dir-right '(left . left)
-  ;;              )
-  ;;             )
-  ;;   )
 
 #+END_SRC
 ** String Inflection
@@ -663,11 +603,6 @@
     :config
     (add-to-list 'company-backends '(company-shell)))
 
-  (use-package company-flow
-    :ensure t
-    :config
-    (add-to-list 'company-backends '(company-flow)))
-
   (setq company-backends '((
                             company-files
                             company-keywords
@@ -705,10 +640,6 @@ Heading list index
    (setq journal-base-dir "/home/work/ORG/")
    (setq journal-name "journal.org")
    (setq org-journal-dir (concat journal-base-dir "journal"))
-
-   (defun disable-fylcheck-in-org-src-block ()
-     (setq-local flycheck-disabled-checkers (append '(emacs-lisp emacs-lisp-checkdoc)))
-     )
 
    (add-hook 'org-src-mode-hook 'disable-fylcheck-in-org-src-block)
 
@@ -994,7 +925,6 @@ Heading list index
       ;;   (setq web-mode-markup-indent-offset 2)
       ;;   (setq web-mode-css-indent-offset 2)
       ;;   (setq web-mode-code-indent-offset 2)
-      ;;   (flow-minor-mode))
       ;; (add-hook 'web-mode-hook  'my-web-mode-hook)
     )
 
@@ -1010,42 +940,6 @@ Heading list index
   (use-package web-completion-data :ensure t)
   (use-package web-mode-edit-element :ensure t)
 
-  (use-package flycheck-flow
-    :ensure t)
-
-
-
-  (use-package flow-minor-mode
-    :ensure t
-    :config
-    (progn
-      ;;(add-hook 'web-mode-hook 'flow-minor-mode)
-      (defun flow/set-flow-executable ()
-         (interactive)
-         (let* ((os (pcase system-type
-                      ('darwin "osx")
-                      ('gnu/linux "linux64")
-                      (_ nil)))
-               (root (locate-dominating-file buffer-file-name "node_modules/flow-bin"))
-               (executable (car (file-expand-wildcards
-                                 (concat root "node_modules/flow-bin/*" os "*/flow")))))
-           (message executable)
-
-      ;;     (setq-local company-flow-executable executable)
-      ;;     ;; These are not necessary for this packaqqqqqqqge, but a good idea if you use
-      ;;     ;; these other packages
-           (setq-local flycheck-javascript-flow-executable executable)))
-         ;;(setq-local flow-minor-default-binary executable))
-      ;;(setq-local flycheck-javascript-flow-executable "/home/work/.nvm/versions/node/v12.18.0/bin/flow"))
-
-      ;; ;; Set this to the mode you use, I use rjsx-mode
-
-      ;; (with-eval-after-load 'flycheck
-      ;;  (flycheck-add-mode 'javascript-flow 'flow-minor-mode))
-      ;; (add-hook 'web-mode-hook #'flow/set-flow-executable t)
-
-      )
-    )
 #+END_SRC
 ** Typescript
 #+BEGIN_SRC emacs-lisp
