@@ -158,7 +158,6 @@
   (setq standard-indent 2)
   (setq truncate-lines t)
   (setq truncate-partial-width-windows nil)
-  (setq js-indent-level 2)
   (winner-mode t)
 #+END_SRC
 
@@ -872,19 +871,6 @@ Heading list index
 
 ** Web Mode
 #+BEGIN_SRC emacs-lisp
-  (use-package emmet-mode
-    :ensure t
-    :diminish (emmet-mode . "ε")
-    :hook
-    ((rjsx-mode-hook . emmet-mode) ;; Auto-start on any markup modes
-     (vue-html-mode-hook . emmet-mode) ;; Auto-start on any markup modes
-     (sgml-mode-hook . emmet-mode) ;; Auto-start on any markup modes
-     (css-mode-hook . emmet-mode)) ;; enable Emmet's css abbreviation.
-    :init
-    (setq emmet-indentation 2
-          emmet-move-cursor-between-quotes t)
-    )
-
   (use-package web-mode
     :mode
     (
