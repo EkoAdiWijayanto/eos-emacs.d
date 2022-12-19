@@ -869,8 +869,8 @@ Heading list index
       ))
 #+END_SRC
 
-** Web Mode
-#+BEGIN_SRC emacs-lisp
+** -- Web Mode
+--#+BEGIN_SRC emacs-lisp
   (use-package web-mode
     :mode
     (
@@ -926,9 +926,9 @@ Heading list index
   (use-package web-completion-data :ensure t)
   (use-package web-mode-edit-element :ensure t)
 
-#+END_SRC
-** Typescript
-#+BEGIN_SRC emacs-lisp
+--#+END_SRC
+** -- Typescript
+--#+BEGIN_SRC emacs-lisp
   (use-package tide
     :config
     (progn
@@ -952,7 +952,7 @@ Heading list index
       ;; (add-hook 'before-save-hook 'tide-format-before-save)
 
       (add-hook 'typescript-mode-hook #'setup-tide-mode)))
-#+END_SRC
+--#+END_SRC
 
 ** Json Mode
 #+BEGIN_SRC emacs-lisp
