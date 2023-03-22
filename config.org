@@ -628,6 +628,16 @@ Heading list index
     :config
     (global-set-key (kbd "C-\"") #'imenu-list-smart-toggle))
 #+END_SRC
+** HideShow
+#+BEGIN_SRC emacs-lisp
+  (use-package hideshow
+    :ensure t
+    :hook (web-mode . hs-minor-mode)
+    :init
+    (define-key global-map (kbd "C-c 0 h") 'hs-hide-block)
+    (define-key global-map (kbd "C-c 0 s") 'hs-show-block)
+    )
+#+END_SRC
 * Org Mode
 ** Init
  #+BEGIN_SRC emacs-lisp
@@ -1053,6 +1063,11 @@ Heading list index
   (setq gc-cons-threshold 100000000)
   ;; To increase the amount of data Emacs reads from a process
   (setq read-process-output-max (* 1024 1024)) 
+#+END_SRC
+** YML
+#+BEGIN_SRC emacs-lisp
+  (use-package yaml-mode
+    :ensure t)
 #+END_SRC
 * Custom
 ** Escape binding
