@@ -640,7 +640,7 @@ Heading list index
    (setq journal-name "journal.org")
    (setq org-journal-dir (concat journal-base-dir "journal"))
 
-   (add-hook 'org-src-mode-hook 'disable-fylcheck-in-org-src-block)
+   ;;(add-hook 'org-src-mode-hook 'disable-fylcheck-in-org-src-block)
 
    (global-set-key (kbd "C-c l") 'org-store-link)
    (global-set-key (kbd "C-c a") 'org-agenda)
