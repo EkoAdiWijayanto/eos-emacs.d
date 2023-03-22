@@ -1050,9 +1050,14 @@ Heading list index
     :init
     (setq lsp-keymap-prefix "C-c l")
     :config
-    (lsp-enable-which-key-integration t)
-    :hook
-    ((go-mode) . lsp))
+    (lsp-enable-which-key-integration t))
+    ;; :hook
+    ;; ((go-mode js2-mode) . lsp-deferred))
+
+  (use-package lsp-treemacs
+  :after lsp)
+
+  (use-package lsp-ivy)
 
   (use-package lsp-ui
     :hook (lsp-mode . lsp-ui-mode)
