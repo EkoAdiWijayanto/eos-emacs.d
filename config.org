@@ -869,8 +869,8 @@ Heading list index
       ))
 #+END_SRC
 
-** -- Web Mode
---#+BEGIN_SRC emacs-lisp
+** Web Mode
+#+BEGIN_SRC emacs-lisp
   (use-package web-mode
     :mode
     (
@@ -888,6 +888,8 @@ Heading list index
     (web-mode-enable-auto-quoting nil)
     (web-mode-enable-current-element-highlight t)
 
+
+  
     ;; Indent inline JS/CSS within HTML
     ;; https://stackoverflow.com/a/36725155/3516664
     (web-mode-script-padding 2)
@@ -926,7 +928,7 @@ Heading list index
   (use-package web-completion-data :ensure t)
   (use-package web-mode-edit-element :ensure t)
 
---#+END_SRC
+#+END_SRC
 ** -- Typescript
 --#+BEGIN_SRC emacs-lisp
   (use-package tide
@@ -979,6 +981,58 @@ Heading list index
 #+BEGIN_SRC emacs-lisp
   (use-package go-mode)
 #+END_SRC
+** --RJSX
+--#+BEGIN_SRC emacs-lisp
+  (use-package rjsx-mode
+   :mode ("\\.js\\'"
+          "\\.jsx\\'")
+   :config
+   (setq js2-mode-show-parse-errors nil
+         js2-mode-show-strict-warnings nil
+         js2-basic-offset 2
+         js-indent-level 2))
+
+  (use-package add-node-modules-path
+    :defer t
+    :hook (((js2-mode rjsx-mode) . add-node-modules-path)))
+--#+END_SRC
+** -- JS2
+-- #+BEGIN_SRC emacs-lisp
+
+  ;;https://github.com/howardabrams/dot-files/blob/master/emacs-javascript.org
+
+  (use-package js2-mode
+    :ensure t
+    :init
+    (setq js-indent-level 2)
+    (setq js-basic-indent 2)
+    (setq js2-strict-missing-semi-warning nil)
+    (setq js2-missing-semi-one-line-override nil)
+    (setq-default js2-basic-indent 2
+                  js2-basic-offset 2
+                  js2-auto-indent-p t
+                  js2-cleanup-whitespace t
+                  js2-enter-indents-newline t
+                  js2-indent-on-enter-key t
+                  js2-global-externs (list "window" "module" "require" "buster" "sinon" "assert" "refute" "setTimeout" "clearTimeout" "setInterval" "clearInterval" "location" "__dirname" "console" "JSON" "jQuery" "$"))
+
+    (add-hook 'js2-mode-hook
+              (lambda ()
+                (push '("function" . ?ƒ) prettify-symbols-alist)))
+
+    (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode)))
+
+  (use-package color-identifiers-mode
+      :ensure t
+      :init
+        (add-hook 'js2-mode-hook 'color-identifiers-mode))
+
+  (use-package xref-js2)
+  (use-package js2-refactor
+    :ensure t
+    :init   (add-hook 'js2-mode-hook 'js2-refactor-mode)
+    :config (js2r-add-keybindings-with-prefix "C-c ."))
+-- #+END_SRC
 ** LSP
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
