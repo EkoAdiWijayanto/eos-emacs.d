@@ -110,7 +110,7 @@
   (column-number-mode t)
   (delete-selection-mode 1)
   (global-hl-line-mode t)
-  (global-linum-mode t)
+  (global-display-line-numbers-mode t)
 
   (setq initial-scratch-message "") ;; Uh, I know what Scratch is for
   (setq visible-bell t)             ;; Get rid of the beeps
@@ -329,7 +329,21 @@
     :init
     (global-set-key (kbd "C-c g") 'magit-status))
 
-  (use-package git-gutter-fringe)
+  (use-package git-gutter-fringe
+    :ensure t
+    :hook
+    (web-mode . git-gutter-mode)
+    :config
+    ;;(setq-default left-fringe-width 5)
+    ;; (custom-set-variables
+    ;;  '(git-gutter:modified-sign "  ") ;; two space
+    ;;  '(git-gutter:added-sign "++")    ;; multiple character is OK
+    ;;  '(git-gutter:deleted-sign "--"))
+
+    (set-face-background 'git-gutter:modified "purple") ;; background color
+    (set-face-foreground 'git-gutter:added "green")
+    (set-face-foreground 'git-gutter:deleted "red")
+    )
 
   (use-package git-timemachine)
 #+END_SRC
@@ -397,7 +411,7 @@
              ))))
 #+END_SRC
 ** Set Theme
-#+BEGIN_SRC emacs-lisp
+--#+BEGIN_SRC emacs-lisp
   ;; cobalt
   (use-package color-theme-modern
     :config
@@ -407,6 +421,32 @@
     ;;(set-face-foreground 'hl-line "#ffffff")
     (set-frame-font "Source Code Pro Medium 20" nil t)
     )
+--#+END_SRC
+
+--#+BEGIN_SRC emacs-lisp
+  (use-package tangonov-theme
+    :ensure t
+    :config
+    (load-theme 'tangonov t))
+--#+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package doom-themes
+    :ensure t
+    :config
+    ;; Global settings (defaults)
+    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+          doom-themes-enable-italic t) ; if nil, italics is universally disabled
+    (load-theme 'doom-molokai t)
+
+    ;; Enable flashing mode-line on errors
+    (doom-themes-visual-bell-config)
+    ;; Enable custom neotree theme (all-the-icons must be installed!)
+    (doom-themes-neotree-config)
+    ;; or for treemacs users
+    (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+    (doom-themes-treemacs-config)
+    ;; Corrects (and improves) org-mode's native fontification.
+    (doom-themes-org-config))
 #+END_SRC
 ** Modeline
 #+BEGIN_SRC emacs-lisp
@@ -719,12 +759,13 @@ Heading list index
    ;; Journal Key bindings
    (global-set-key (kbd "C-c b") 'do-journal)
 
-
    (use-package org-roam
+     :after (org emacsql-sqlite-builtin)
      :ensure t
      :init
      (setq org-roam-v2-ack t)
      :custom
+     (org-roam-database-connector 'sqlite-builtin)
      (org-roam-directory "/home/work/ORG/ROAM/")
      (org-roam-completion-everywhere t)
      (org-roam-completion-system 'default)
@@ -884,7 +925,7 @@ Heading list index
   (use-package web-mode
     :mode
     (
-     "\\.js[x]?\\'"
+     "\\.[m]js[x]?\\'"
      "\\.html\\'"
      "\\.ejs\\'")
     :custom
@@ -939,8 +980,12 @@ Heading list index
   (use-package web-mode-edit-element :ensure t)
 
 #+END_SRC
-** -- Typescript
---#+BEGIN_SRC emacs-lisp
+** Typescript
+#+BEGIN_SRC emacs-lisp
+  (use-package typescript-mode
+    :ensure t)
+#+END_SRC
+-- #+BEGIN_SRC emacs-lisp
   (use-package tide
     :config
     (progn
@@ -964,7 +1009,7 @@ Heading list index
       ;; (add-hook 'before-save-hook 'tide-format-before-save)
 
       (add-hook 'typescript-mode-hook #'setup-tide-mode)))
---#+END_SRC
+-- #+END_SRC
 
 ** Json Mode
 #+BEGIN_SRC emacs-lisp
@@ -1050,12 +1095,17 @@ Heading list index
     :init
     (setq lsp-keymap-prefix "C-c l")
     :config
-    (lsp-enable-which-key-integration t))
-    ;; :hook
-    ;; ((go-mode js2-mode) . lsp-deferred))
+    (lsp-enable-which-key-integration t)
+    :hook
+    ((go-mode typescript-mode web-mode) . lsp-deferred)
+    (lsp-mode . lsp-enable-which-key-integration))
 
   (use-package lsp-treemacs
-  :after lsp)
+    :after (lsp-mode treemacs)
+    :commands (lsp-treemacs-errors-list)
+    :config
+    (lsp-treemacs-sync-mode 1)
+    )
 
   (use-package lsp-ivy)
 
@@ -1073,6 +1123,123 @@ Heading list index
 #+BEGIN_SRC emacs-lisp
   (use-package yaml-mode
     :ensure t)
+#+END_SRC
+** Treemacs
+#+BEGIN_SRC emacs-lisp
+  (use-package treemacs
+    :ensure t
+    :defer t
+    :init
+    (with-eval-after-load 'winum
+      (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+    :config
+    (progn
+      (setq treemacs-collapse-dirs                   (if treemacs-python-executable 3 0)
+            treemacs-deferred-git-apply-delay        0.5
+            treemacs-directory-name-transformer      #'identity
+            treemacs-display-in-side-window          t
+            treemacs-eldoc-display                   'simple
+            treemacs-file-event-delay                2000
+            treemacs-file-extension-regex            treemacs-last-period-regex-value
+            treemacs-file-follow-delay               0.2
+            treemacs-file-name-transformer           #'identity
+            treemacs-follow-after-init               t
+            treemacs-expand-after-init               t
+            treemacs-find-workspace-method           'find-for-file-or-pick-first
+            treemacs-git-command-pipe                ""
+            treemacs-goto-tag-strategy               'refetch-index
+            treemacs-header-scroll-indicators        '(nil . "^^^^^^")
+            treemacs-hide-dot-git-directory          t
+            treemacs-indentation                     2
+            treemacs-indentation-string              " "
+            treemacs-is-never-other-window           nil
+            treemacs-max-git-entries                 5000
+            treemacs-missing-project-action          'ask
+            treemacs-move-forward-on-expand          nil
+            treemacs-no-png-images                   nil
+            treemacs-no-delete-other-windows         t
+            treemacs-project-follow-cleanup          nil
+            treemacs-persist-file                    (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+            treemacs-position                        'left
+            treemacs-read-string-input               'from-child-frame
+            treemacs-recenter-distance               0.1
+            treemacs-recenter-after-file-follow      nil
+            treemacs-recenter-after-tag-follow       nil
+            treemacs-recenter-after-project-jump     'always
+            treemacs-recenter-after-project-expand   'on-distance
+            treemacs-litter-directories              '("/node_modules" "/.venv" "/.cask")
+            treemacs-project-follow-into-home        nil
+            treemacs-show-cursor                     nil
+            treemacs-show-hidden-files               t
+            treemacs-silent-filewatch                nil
+            treemacs-silent-refresh                  nil
+            treemacs-sorting                         'alphabetic-asc
+            treemacs-select-when-already-in-treemacs 'move-back
+            treemacs-space-between-root-nodes        t
+            treemacs-tag-follow-cleanup              t
+            treemacs-tag-follow-delay                1.5
+            treemacs-text-scale                      nil
+            treemacs-user-mode-line-format           nil
+            treemacs-user-header-line-format         nil
+            treemacs-wide-toggle-width               70
+            treemacs-width                           35
+            treemacs-width-increment                 1
+            treemacs-width-is-initially-locked       t
+            treemacs-workspace-switch-cleanup        nil)
+
+      ;; The default width and height of the icons is 22 pixels. If you are
+      ;; using a Hi-DPI display, uncomment this to double the icon size.
+      ;;(treemacs-resize-icons 44)
+
+      (treemacs-follow-mode t)
+      (treemacs-filewatch-mode t)
+      (treemacs-fringe-indicator-mode 'always)
+      (when treemacs-python-executable
+        (treemacs-git-commit-diff-mode t))
+
+      (pcase (cons (not (null (executable-find "git")))
+                   (not (null treemacs-python-executable)))
+        (`(t . t)
+         (treemacs-git-mode 'deferred))
+        (`(t . _)
+         (treemacs-git-mode 'simple)))
+
+      (treemacs-hide-gitignored-files-mode nil))
+    :bind
+    (:map global-map
+          ("M-0"       . treemacs-select-window)
+          ("C-x t 1"   . treemacs-delete-other-windows)
+          ("C-x t t"   . treemacs)
+          ("C-x t d"   . treemacs-select-directory)
+          ("C-x t B"   . treemacs-bookmark)
+          ("C-x t C-t" . treemacs-find-file)
+          ("C-x t M-t" . treemacs-find-tag)))
+
+  ;; (use-package treemacs-evil
+  ;;   :after (treemacs evil)
+  ;;   :ensure t)
+
+  (use-package treemacs-projectile
+    :after (treemacs projectile)
+    :ensure t)
+
+  (use-package treemacs-icons-dired
+    :hook (dired-mode . treemacs-icons-dired-enable-once)
+    :ensure t)
+
+  (use-package treemacs-magit
+    :after (treemacs magit)
+    :ensure t)
+
+  ;; (use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
+  ;;   :after (treemacs persp-mode) ;;or perspective vs. persp-mode
+  ;;   :ensure t
+  ;;   :config (treemacs-set-scope-type 'Perspectives))
+
+  ;; (use-package treemacs-tab-bar ;;treemacs-tab-bar if you use tab-bar-mode
+  ;;   :after (treemacs)
+  ;;   :ensure t
+  ;;   :config (treemacs-set-scope-type 'Tabs))
 #+END_SRC
 * Custom
 ** Escape binding
@@ -1186,76 +1353,6 @@ Heading list index
 
 #+END_SRC
 * promoted
-** Hydra
-#+BEGIN_SRC emacs-lisp
-  (use-package hydra
-    :ensure t
-    :bind ("C-c w" . hydra-clock/body))
-
-  (defhydra hydra-clock (:color blue)
-    "
-      ^
-      ^Clock^             ^Do^
-      ^─────^─────────────^──^─────────
-      _q_ quit            _c_ cancel
-      ^^                  _d_ display
-      ^^                  _e_ effort
-      ^^                  _i_ in
-      ^^                  _j_ jump
-      ^^                  _o_ out
-      ^^                  _r_ report
-      ^^                  ^^
-      "
-    ("q" nil)
-    ("c" org-clock-cancel :color pink)
-    ("d" org-clock-display)
-    ("e" org-clock-modify-effort-estimate)
-    ("i" org-clock-in)
-    ("j" org-clock-goto)
-    ("o" org-clock-out)
-    ("r" org-clock-report))
-
-
-#+END_SRC
-** Copyit
-#+BEGIN_SRC emacs-lisp
-  (use-package copyit
-    :ensure t)
-#+END_SRC
-** Jest
-#+BEGIN_SRC emacs-lisp
-  (use-package jest-test-mode
-    :after (web-mode)
-    :config
-    (setq  jest-pdb-track nil)
-    (defun jest--transform-arguments (args)
-      "Transform ARGS so that jest understands them."
-      (-->
-       args
-       (jest--quote-string-option it "-k")
-       (jest--quote-string-option it "-m")))
-    (defun jest--project-root ()
-      "Find the project root directory."
-      (locate-dominating-file (buffer-file-name) "package.json"))
-    (defun jest-wallex-manager ()
-      "Set jest-executable for wallex-base manager"
-      (interactive)
-      (defun jest-test-command (filename)
-        "Format test arguments for FILENAME."
-        (format "SLACK_TEST_MODE=true EMAIL_TEST_MODE=true npm run test:manager -- --detectOpenHandles %s %s"
-                (mapconcat #'shell-quote-argument jest-test-options " ")
-
-                filename)))
-    (defun jest-wallex-manager-with-slack ()
-      "Set jest-executable for wallex-base manager with slack enabled"
-      (interactive)
-      (jest-test-update-last-test "SLACK_TEST_MODE=false EMAIL_TEST_MODE=true npm run test:manager -- "))
-    :hook (web-mode . jest-test-mode))
-#+END_SRC
-** Origami Code Folding
-#+BEGIN_SRC emacs-lisp
-  (use-package origami)
-#+END_SRC
 ** Undo Tree
    Menampilkan history undo dalam bentuk tree.
 #+BEGIN_SRC emacs-lisp
@@ -1275,20 +1372,6 @@ Heading list index
 
 #+END_SRC
 
-** Buffer Flip
-#+BEGIN_SRC emacs-lisp
-  (use-package buffer-flip
-    :bind  (("C-<tab>" . buffer-flip)
-            :map buffer-flip-map
-            ( "C-<tab>" .   buffer-flip-forward) 
-            ( "C-S-<tab>" . buffer-flip-backward) 
-            ( "C-ESC" .     buffer-flip-abort))
-    :config
-    (setq buffer-flip-skip-patterns
-          '("^\\*helm\\b"
-            "^\\*swiper\\*$")))
-#+END_SRC
-** Pretty Hydra
 ** OV
 https://github.com/emacsorphanage/ov
 
